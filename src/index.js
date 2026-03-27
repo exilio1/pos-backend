@@ -4,6 +4,9 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const runMigrations = require('./config/migrate');
 const userRoutes = require('./routes/user.routes');
+const roleRoutes = require('./routes/role.routes');
+const saleRoutes = require('./routes/sale.routes');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +15,9 @@ app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/users', userRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/sales', saleRoutes);
+
 
 app.get('/', (req, res) => {
   res.json({ message: 'API corriendo', docs: '/api-docs' });
