@@ -1,7 +1,11 @@
+// Importamos el modelo de usuarios.
 const UserModel = require('../models/user.model');
+// Reutilizamos el servicio auth para registrar usuarios con hash.
 const AuthService = require('../services/auth.service')
 
+// Este controlador maneja el módulo de usuarios.
 const UserController = {
+  // Lista todos los usuarios.
   async getAll(req, res) {
     try {
       const users = await UserModel.findAll();
@@ -11,6 +15,7 @@ const UserController = {
     }
   },
 
+  // Busca un usuario por su id.
   async getById(req, res) {
     try {
       const user = await UserModel.findById(req.params.id);
@@ -24,8 +29,10 @@ const UserController = {
     }
   },
 
+// Este método crea usuarios desde la parte administrativa.
 async create(req, res) {
   try {
+    // Usamos la misma lógica de registro para guardar bien la contraseña.
     const result = await AuthService.register(req.body);
 
     return res.status(201).json({
@@ -48,6 +55,7 @@ async create(req, res) {
 },
 
 
+  // Actualiza nombre y correo del usuario.
   async update(req, res) {
     try {
       const { nombre, correo } = req.body;
@@ -71,6 +79,7 @@ async create(req, res) {
     }
   },
 
+  // Elimina un usuario por id.
   async remove(req, res) {
     try {
       const user = await UserModel.delete(req.params.id);
@@ -86,4 +95,5 @@ async create(req, res) {
   },
 };
 
+// Exportamos el controlador.
 module.exports = UserController;

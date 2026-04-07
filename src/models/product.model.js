@@ -1,6 +1,9 @@
+// Importamos la conexión a la base de datos.
 const pool = require('../config/db');
 
+// Este modelo consulta los productos para mostrarlos en el frontend.
 const ProductModel = {
+  // Lista todos los productos con su categoría.
   async findAll() {
     const query = `
       SELECT
@@ -25,4 +28,5 @@ const ProductModel = {
   },
 };
 
+// Exportamos el modelo.
 module.exports = ProductModel;

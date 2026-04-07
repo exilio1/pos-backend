@@ -1,6 +1,9 @@
+// Importamos la conexión a la base de datos.
 const pool = require('../config/db');
 
+// Este modelo maneja las consultas del módulo de usuarios.
 const UserModel = {
+  // Lista todos los usuarios con su rol.
   async findAll() {
     const query = `
       SELECT
@@ -19,6 +22,7 @@ const UserModel = {
     return rows;
   },
 
+  // Busca un usuario por id.
   async findById(id) {
     const query = `
       SELECT
@@ -38,6 +42,7 @@ const UserModel = {
     return rows[0] || null;
   },
 
+  // Busca un usuario por correo.
   async findByEmail(correo) {
     const query = `
       SELECT
@@ -57,6 +62,7 @@ const UserModel = {
     return rows[0] || null;
   },
 
+  // Actualiza nombre y correo del usuario.
   async update(id, { nombre, correo }) {
     const query = `
       UPDATE usuarios
@@ -69,6 +75,7 @@ const UserModel = {
     return rows[0] || null;
   },
 
+  // Elimina un usuario por id.
   async delete(id) {
     const query = `
       DELETE FROM usuarios
@@ -81,4 +88,5 @@ const UserModel = {
   },
 };
 
+// Exportamos el modelo.
 module.exports = UserModel;

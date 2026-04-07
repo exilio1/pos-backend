@@ -1,6 +1,9 @@
+// Importamos la conexión a la base de datos.
 const pool = require('../config/db');
 
+// Este modelo agrupa consultas relacionadas con auth y roles.
 const AuthModel = {
+  // Lista todos los roles existentes.
   async findAllRoles() {
     const query = `
       SELECT id, nombre
@@ -12,6 +15,7 @@ const AuthModel = {
     return rows;
   },
 
+  // Busca un usuario por su correo.
   async findUserByEmail(correo) {
     const query = `
       SELECT
@@ -33,6 +37,7 @@ const AuthModel = {
     return rows[0] || null;
   },
 
+  // Busca un rol usando su nombre.
   async findRoleByName(nombreRol) {
     const query = `
       SELECT id, nombre
@@ -45,6 +50,7 @@ const AuthModel = {
     return rows[0] || null;
   },
 
+  // Crea un usuario nuevo en la base de datos.
   async createUser({ nombre, correo, contrasena, rol_id }) {
     const query = `
       INSERT INTO usuarios (nombre, correo, contrasena, rol_id)
@@ -57,6 +63,7 @@ const AuthModel = {
     return rows[0];
   },
 
+  // Actualiza la contraseña ya convertida en hash.
   async updatePassword(userId, hashedPassword) {
     const query = `
       UPDATE usuarios
@@ -68,4 +75,5 @@ const AuthModel = {
   }
 };
 
+// Exportamos el modelo.
 module.exports = AuthModel;
