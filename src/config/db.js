@@ -17,20 +17,5 @@ pool.on('error', (err) => {
   console.error('Error en el pool de PostgreSQL:', err);
 });
 
-// Función para verificar la conexión al iniciar.
-async function testConnection() {
-  try {
-    const client = await pool.connect();
-    const res = await client.query('SELECT current_database(), current_user');
-    console.log(`✅ PostgreSQL conectado - DB: ${res.rows[0].current_database}, Usuario: ${res.rows[0].current_user}`);
-    client.release();
-    return true;
-  } catch (err) {
-    console.error('❌ Error conectando a PostgreSQL:', err.message);
-    return false;
-  }
-}
-
-// Exportamos la conexión y el test.
+// Exportamos la conexión para usarla en los modelos.
 module.exports = pool;
-module.exports.testConnection = testConnection;

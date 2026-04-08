@@ -16,8 +16,6 @@ const userRoutes = require('./routes/user.routes');
 const roleRoutes = require('./routes/role.routes');
 // Rutas del módulo products.
 const productRoutes = require('./routes/product.routes');
-// Test de conexión a la base de datos.
-const { testConnection } = require('./config/db');
 
 
 // Creamos la app principal del backend.
@@ -51,10 +49,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'API corriendo', docs: '/api-docs' });
 });
 
-// Encendemos el servidor y verificamos la conexión a la DB.
-app.listen(PORT, async () => {
+// Encendemos el servidor.
+app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
   console.log(`Swagger en http://localhost:${PORT}/api-docs`);
-  // Probamos la conexión a PostgreSQL al arrancar.
-  await testConnection();
 });
