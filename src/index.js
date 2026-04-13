@@ -22,10 +22,20 @@ const productRoutes = require('./routes/product.routes');
 const app = express();
 // Tomamos el puerto desde el entorno o usamos 3000.
 const PORT = process.env.PORT || 3000;
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
 
 // Permitimos peticiones del frontend.
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Origen no permitido por CORS: ${origin}`));
+  },
   credentials: true,
 }));
 

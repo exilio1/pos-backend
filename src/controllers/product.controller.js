@@ -28,7 +28,6 @@ const ProductController = {
     try {
       const { nombre, descripcion, precio, stock, categoria_id, codigo_barras } = req.body;
 
-      // Validaciones básicas.
       if (!nombre || nombre.trim() === '') {
         return res.status(400).json({
           success: false,
@@ -50,7 +49,6 @@ const ProductController = {
         });
       }
 
-      // Guardamos el producto en la base de datos.
       const product = await ProductModel.create({
         nombre: nombre.trim(),
         descripcion,
@@ -86,6 +84,72 @@ const ProductController = {
       return res.status(500).json({
         success: false,
         message: error.message || 'Error al consultar categorías',
+      });
+    }
+  },
+
+  // Este método actualiza un producto existente.
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const {
+        nombre,
+        descripcion = '',
+        precio,
+        stock,
+        codigo_barras = '',
+        estado,
+      } = req.body;
+
+      if (!nombre || precio === undefined || stock === undefined || estado === undefined) {
+        return res.status(400).json({
+          success: false,
+          message: 'Nombre, precio, stock y estado son obligatorios',
+        });
+      }
+
+      const parsedPrice = Number(precio);
+      const parsedStock = Number(stock);
+
+      if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'El precio debe ser un numero valido',
+        });
+      }
+
+      if (!Number.isInteger(parsedStock) || parsedStock < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'El stock debe ser un numero entero valido',
+        });
+      }
+
+      const updatedProduct = await ProductModel.updateById(id, {
+        nombre: String(nombre).trim(),
+        descripcion: String(descripcion).trim(),
+        precio: parsedPrice,
+        stock: parsedStock,
+        codigo_barras: String(codigo_barras).trim(),
+        estado: Boolean(estado),
+      });
+
+      if (!updatedProduct) {
+        return res.status(404).json({
+          success: false,
+          message: 'Producto no encontrado',
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: 'Producto actualizado correctamente',
+        data: updatedProduct,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || 'Error al actualizar producto',
       });
     }
   },

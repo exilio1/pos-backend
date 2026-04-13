@@ -14,6 +14,8 @@ router.get('/', authenticateToken, ProductController.getAll);
 router.get('/categories', authenticateToken, ProductController.getCategories);
 // Ruta para crear un producto, solo admin.
 router.post('/', authenticateToken, authorizeRoles('ADMIN'), ProductController.create);
+// Ruta para actualizar un producto.
+router.put('/:id', authenticateToken, ProductController.update);
 
 // Exportamos las rutas.
 module.exports = router;
