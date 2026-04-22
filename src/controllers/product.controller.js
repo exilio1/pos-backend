@@ -26,7 +26,7 @@ const ProductController = {
   // Este método crea un nuevo producto.
   async create(req, res) {
     try {
-      const { nombre, descripcion, precio, stock, categoria_id, codigo_barras } = req.body;
+      const { nombre, descripcion, imagen_url, precio, stock, categoria_id, codigo_barras } = req.body;
 
       if (!nombre || nombre.trim() === '') {
         return res.status(400).json({
@@ -52,6 +52,7 @@ const ProductController = {
       const product = await ProductModel.create({
         nombre: nombre.trim(),
         descripcion,
+        imagen_url: imagen_url ? String(imagen_url).trim() : null,
         precio: Number(precio),
         stock: stock !== undefined ? Number(stock) : 0,
         categoria_id,
@@ -95,6 +96,7 @@ const ProductController = {
       const {
         nombre,
         descripcion = '',
+        imagen_url = '',
         precio,
         stock,
         codigo_barras = '',
@@ -128,6 +130,7 @@ const ProductController = {
       const updatedProduct = await ProductModel.updateById(id, {
         nombre: String(nombre).trim(),
         descripcion: String(descripcion).trim(),
+        imagen_url: String(imagen_url).trim(),
         precio: parsedPrice,
         stock: parsedStock,
         codigo_barras: String(codigo_barras).trim(),

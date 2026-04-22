@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS public.productos (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL PRIMARY KEY,
     nombre character varying(150) NOT NULL,
     descripcion text,
+    imagen_url text,
     precio numeric(10,2) NOT NULL,
     stock integer DEFAULT 0,
     categoria_id uuid REFERENCES public.categorias(id),
@@ -45,6 +46,9 @@ CREATE TABLE IF NOT EXISTS public.productos (
     creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE public.productos
+ADD COLUMN IF NOT EXISTS imagen_url text;
 
 CREATE TABLE IF NOT EXISTS public.cajas (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL PRIMARY KEY,
@@ -119,27 +123,27 @@ INSERT INTO public.categorias (id, nombre, creado_en) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Productos
-INSERT INTO public.productos (id, nombre, descripcion, precio, stock, categoria_id, codigo_barras, estado, creado_en, actualizado_en) VALUES
-('4b20c65f-31cb-42cc-ad16-e77ae5938958', 'Coca-Cola 400ml', 'Bebida gaseosa', 3500.00, 50, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('0a29500a-d951-47a9-b8fd-a1874345fe21', 'Pepsi 400ml', 'Bebida gaseosa', 3400.00, 40, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7702', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('c980652b-cb13-471d-b6c8-394c770f04d1', 'Agua Cristal', 'Agua sin gas', 2500.00, 60, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7703', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('9f7ddcd8-27d2-4a3e-bb05-48cab953c3a5', 'Red Bull', 'Energizante', 8000.00, 20, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7704', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('ff2fc5e7-701f-4217-8b85-e29ceed6ef0b', 'Jugo Hit', 'Jugo en botella', 3000.00, 35, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7705', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('bc696062-ed2a-4bd3-a4f6-b887f53ff859', 'Galletas Oreo', 'Galletas chocolate', 3000.00, 40, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7706', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('095802bd-c47f-491d-b066-49d15efb24ec', 'Chocorramo', 'Ponqué', 2500.00, 45, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7707', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('3e533d54-a891-4d05-af37-e70d104a0db0', 'Papas Margarita', 'Papas fritas', 3500.00, 50, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7708', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('ddd62285-2db6-4a11-b596-b21bf77d6ef3', 'Leche 1L', 'Leche entera', 4200.00, 30, '79dee748-a927-4043-86a3-941b98f594c6', '7709', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('17d4d77d-6cf9-441c-a2ce-7ba804333947', 'Yogurt', 'Yogurt fresa', 2800.00, 25, '79dee748-a927-4043-86a3-941b98f594c6', '7710', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('0a8a377c-6d70-4daa-82ac-4119036689b6', 'Detergente', 'Ariel polvo', 8500.00, 15, '3cdbc862-31f1-4236-9875-ed106bee9007', '7711', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('61b7a5a3-d5bf-47f7-a457-fe05bb910161', 'Jabón Rey', 'Jabón azul', 2500.00, 40, '3cdbc862-31f1-4236-9875-ed106bee9007', '7712', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('22d96cf1-0d6b-4e5d-90fa-8534d15f8bb3', 'Arroz 1kg', 'Arroz blanco', 4500.00, 60, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7713', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('95d42197-dbe6-4349-b137-d102ea052d00', 'Lentejas', 'Lentejas 500g', 3000.00, 50, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7714', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('951de1d5-e85f-4d67-8b22-b003b9dce458', 'Frijoles', 'Frijol rojo', 3200.00, 45, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7715', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
-('107da609-f16b-461b-922b-a9817401adcc', 'Coca-Cola 400ml', 'Bebida gaseosa', 3500.00, 50, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701001', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
-('7762b70f-61c3-4a5c-82aa-ecfa8c50190c', 'Pepsi 400ml', 'Bebida gaseosa', 3400.00, 40, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701002', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
-('3936e787-9987-41d2-8dc6-3dda81e83050', 'Agua Cristal 600ml', 'Agua sin gas', 2500.00, 60, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701003', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
-('303d7cf1-8388-4534-b3f4-0b225cfb921c', 'Galletas Oreo', 'Galletas de chocolate', 3000.00, 35, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7701004', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
-('d465ceed-2bc0-46e7-b920-4ed967bd080f', 'Chocorramo', 'Ponqué cubierto de chocolate', 2500.00, 45, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7701005', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692')
+INSERT INTO public.productos (id, nombre, descripcion, imagen_url, precio, stock, categoria_id, codigo_barras, estado, creado_en, actualizado_en) VALUES
+('4b20c65f-31cb-42cc-ad16-e77ae5938958', 'Coca-Cola 400ml', 'Bebida gaseosa', NULL, 3500.00, 50, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('0a29500a-d951-47a9-b8fd-a1874345fe21', 'Pepsi 400ml', 'Bebida gaseosa', NULL, 3400.00, 40, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7702', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('c980652b-cb13-471d-b6c8-394c770f04d1', 'Agua Cristal', 'Agua sin gas', NULL, 2500.00, 60, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7703', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('9f7ddcd8-27d2-4a3e-bb05-48cab953c3a5', 'Red Bull', 'Energizante', NULL, 8000.00, 20, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7704', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('ff2fc5e7-701f-4217-8b85-e29ceed6ef0b', 'Jugo Hit', 'Jugo en botella', NULL, 3000.00, 35, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7705', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('bc696062-ed2a-4bd3-a4f6-b887f53ff859', 'Galletas Oreo', 'Galletas chocolate', NULL, 3000.00, 40, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7706', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('095802bd-c47f-491d-b066-49d15efb24ec', 'Chocorramo', 'Ponqué', NULL, 2500.00, 45, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7707', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('3e533d54-a891-4d05-af37-e70d104a0db0', 'Papas Margarita', 'Papas fritas', NULL, 3500.00, 50, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7708', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('ddd62285-2db6-4a11-b596-b21bf77d6ef3', 'Leche 1L', 'Leche entera', NULL, 4200.00, 30, '79dee748-a927-4043-86a3-941b98f594c6', '7709', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('17d4d77d-6cf9-441c-a2ce-7ba804333947', 'Yogurt', 'Yogurt fresa', NULL, 2800.00, 25, '79dee748-a927-4043-86a3-941b98f594c6', '7710', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('0a8a377c-6d70-4daa-82ac-4119036689b6', 'Detergente', 'Ariel polvo', NULL, 8500.00, 15, '3cdbc862-31f1-4236-9875-ed106bee9007', '7711', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('61b7a5a3-d5bf-47f7-a457-fe05bb910161', 'Jabón Rey', 'Jabón azul', NULL, 2500.00, 40, '3cdbc862-31f1-4236-9875-ed106bee9007', '7712', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('22d96cf1-0d6b-4e5d-90fa-8534d15f8bb3', 'Arroz 1kg', 'Arroz blanco', NULL, 4500.00, 60, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7713', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('95d42197-dbe6-4349-b137-d102ea052d00', 'Lentejas', 'Lentejas 500g', NULL, 3000.00, 50, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7714', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('951de1d5-e85f-4d67-8b22-b003b9dce458', 'Frijoles', 'Frijol rojo', NULL, 3200.00, 45, 'f7e9d40c-a6bf-4bb0-b71e-68aa430b425b', '7715', true, '2026-03-23 23:21:19.706686', '2026-03-23 23:21:19.706686'),
+('107da609-f16b-461b-922b-a9817401adcc', 'Coca-Cola 400ml', 'Bebida gaseosa', NULL, 3500.00, 50, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701001', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
+('7762b70f-61c3-4a5c-82aa-ecfa8c50190c', 'Pepsi 400ml', 'Bebida gaseosa', NULL, 3400.00, 40, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701002', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
+('3936e787-9987-41d2-8dc6-3dda81e83050', 'Agua Cristal 600ml', 'Agua sin gas', NULL, 2500.00, 60, '419d00b2-0c7f-4ba2-b92d-166703f1d501', '7701003', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
+('303d7cf1-8388-4534-b3f4-0b225cfb921c', 'Galletas Oreo', 'Galletas de chocolate', NULL, 3000.00, 35, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7701004', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692'),
+('d465ceed-2bc0-46e7-b920-4ed967bd080f', 'Chocorramo', 'Ponqué cubierto de chocolate', NULL, 2500.00, 45, '1b1fad0c-7fea-4852-b1bd-cf9e89b14711', '7701005', true, '2026-03-23 23:27:27.550692', '2026-03-23 23:27:27.550692')
 ON CONFLICT (id) DO NOTHING;
 
 -- Cajas

@@ -10,6 +10,7 @@ const ProductModel = {
         p.id,
         p.nombre,
         p.descripcion,
+        p.imagen_url,
         p.precio,
         p.stock,
         p.categoria_id,
@@ -28,16 +29,17 @@ const ProductModel = {
   },
 
   // Crea un nuevo producto en la base de datos.
-  async create({ nombre, descripcion, precio, stock, categoria_id, codigo_barras }) {
+  async create({ nombre, descripcion, imagen_url, precio, stock, categoria_id, codigo_barras }) {
     const query = `
-      INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, codigo_barras)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO productos (nombre, descripcion, imagen_url, precio, stock, categoria_id, codigo_barras)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
     `;
 
     const values = [
       nombre,
       descripcion || null,
+      imagen_url || null,
       precio,
       stock || 0,
       categoria_id || null,
@@ -61,6 +63,7 @@ const ProductModel = {
         p.id,
         p.nombre,
         p.descripcion,
+        p.imagen_url,
         p.precio,
         p.stock,
         p.categoria_id,
@@ -80,22 +83,23 @@ const ProductModel = {
   },
 
   // Actualiza los datos editables de un producto.
-  async updateById(id, { nombre, descripcion, precio, stock, codigo_barras, estado }) {
+  async updateById(id, { nombre, descripcion, imagen_url, precio, stock, codigo_barras, estado }) {
     const query = `
       UPDATE productos
       SET
         nombre = $2,
         descripcion = $3,
-        precio = $4,
-        stock = $5,
-        codigo_barras = $6,
-        estado = $7,
+        imagen_url = $4,
+        precio = $5,
+        stock = $6,
+        codigo_barras = $7,
+        estado = $8,
         actualizado_en = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING id
     `;
 
-    const values = [id, nombre, descripcion, precio, stock, codigo_barras, estado];
+    const values = [id, nombre, descripcion, imagen_url || null, precio, stock, codigo_barras, estado];
     const { rows } = await pool.query(query, values);
 
     if (!rows[0]) {

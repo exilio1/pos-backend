@@ -20,6 +20,7 @@ const SaleModel = {
         p.id,
         p.nombre,
         p.descripcion,
+        p.imagen_url,
         p.precio,
         p.stock,
         p.codigo_barras,
