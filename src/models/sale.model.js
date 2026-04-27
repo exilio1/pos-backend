@@ -1,12 +1,18 @@
+// Importamos la conexión a la base de datos.
 const pool = require('../config/db');
 
+// Este modelo agrupa las consultas usadas en el módulo de ventas.
 const SaleModel = {
+  // Busca productos activos y permite filtrar por texto.
   async findProducts(filters = {}) {
     const { search = '' } = filters;
+    // values guarda los parámetros seguros para la consulta SQL.
     const values = [];
+    // Por defecto solo mostramos productos activos.
     const where = ['p.estado = true'];
 
     if (search.trim()) {
+      // Si el usuario escribió algo, buscamos por nombre, código o categoría.
       values.push(`%${search.trim()}%`);
       where.push(`(
         p.nombre ILIKE $${values.length}
@@ -15,6 +21,7 @@ const SaleModel = {
       )`);
     }
 
+    // Esta consulta devuelve los campos que la vista de ventas necesita.
     const query = `
       SELECT
         p.id,
@@ -32,9 +39,11 @@ const SaleModel = {
       ORDER BY p.nombre ASC
     `;
 
+    // Ejecutamos la consulta y devolvemos solo las filas.
     const { rows } = await pool.query(query, values);
     return rows;
   },
 };
 
+// Exportamos el modelo para usarlo desde el controlador.
 module.exports = SaleModel;
