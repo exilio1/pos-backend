@@ -92,6 +92,7 @@ const AuthService = {
     const token = jwt.sign(
       {
         sub: user.id,
+        nombre: user.nombre,
         correo: user.correo,
         rol: user.rol,
       },
