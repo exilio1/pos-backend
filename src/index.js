@@ -18,6 +18,8 @@ const roleRoutes = require('./routes/role.routes');
 const productRoutes = require('./routes/product.routes');
 // Rutas del módulo sales.
 const saleRoutes = require('./routes/sale.routes');
+// Rutas del módulo cash (cajas).
+const cashRoutes = require('./routes/cash.routes');
 
 
 // Creamos la app principal del backend.
@@ -56,6 +58,8 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/products', productRoutes);
 // Ruta de ventas.
 app.use('/api/sales', saleRoutes);
+// Ruta de cajas.
+app.use('/api/cash', cashRoutes);
 
 
 // Ruta simple para comprobar que la API está funcionando.
