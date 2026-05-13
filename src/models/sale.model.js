@@ -1,10 +1,12 @@
 const crypto = require('crypto');
 const pool = require('../config/db');
 
+// Deja el descuento dentro de un rango válido entre 0 y 100.
 function normalizeDiscount(discountPercentage = 0) {
   return Math.min(Math.max(Number(discountPercentage) || 0, 0), 100);
 }
 
+// Busca la última caja abierta porque una venta no se debe guardar sin caja activa.
 async function findOpenCashRegister(client) {
   const openCashRegisterQuery = `
     SELECT id
@@ -23,6 +25,7 @@ async function findOpenCashRegister(client) {
   return openCashRegister;
 }
 
+// Valida productos, arma el detalle y recalcula totales desde backend.
 async function buildSaleData(client, items = [], discountPercentage = 0) {
   const productIds = items.map((item) => item.producto_id);
 
@@ -93,6 +96,7 @@ async function buildSaleData(client, items = [], discountPercentage = 0) {
 }
 
 const SaleModel = {
+  // Consulta productos activos y permite filtrar por nombre, código o categoría.
   async findProducts(filters = {}) {
     const { search = '' } = filters;
     const values = [];
@@ -128,6 +132,7 @@ const SaleModel = {
     return rows;
   },
 
+  // Guarda la venta principal, el detalle y descuenta el stock en una sola transacción.
   async createSale({ userId, paymentMethod, discountPercentage = 0, items = [] }) {
     const client = await pool.connect();
 
@@ -185,6 +190,7 @@ const SaleModel = {
     }
   },
 
+  // Prepara los datos que Wompi necesita para abrir el widget de pago.
   async createWompiCheckoutSession({ user, discountPercentage = 0, items = [] }) {
     const client = await pool.connect();
 
@@ -216,6 +222,7 @@ const SaleModel = {
     }
   },
 
+  // Confirma que la transacción en Wompi sí exista, esté aprobada y coincida con la venta.
   async confirmWompiTransaction({ transactionId, reference, discountPercentage = 0, items = [] }) {
     const wompiBaseUrl = process.env.WOMPI_API_URL || 'https://sandbox.wompi.co/v1';
 

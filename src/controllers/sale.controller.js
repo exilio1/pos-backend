@@ -1,5 +1,6 @@
 const SaleModel = require('../models/sale.model');
 
+// Lista de mensajes que ya conocemos para responder con error controlado.
 const knownErrors = [
   'Debes agregar productos al carrito',
   'Debes seleccionar un medio de pago',
@@ -13,6 +14,7 @@ const knownErrors = [
   'El monto pagado en Wompi no coincide con el total de la venta',
 ];
 
+// Decide si el error es de validación del usuario o un problema interno del servidor.
 function resolveStatusCode(error) {
   if (
     knownErrors.includes(error.message) ||
@@ -26,6 +28,7 @@ function resolveStatusCode(error) {
 }
 
 const SaleController = {
+  // Devuelve los productos disponibles para que el frontend los pueda buscar.
   async getProducts(req, res) {
     try {
       const products = await SaleModel.findProducts({
@@ -44,6 +47,7 @@ const SaleController = {
     }
   },
 
+  // Registra una venta normal validando primero el medio de pago y el carrito.
   async createSale(req, res) {
     try {
       const { metodo_pago, descuento_porcentaje = 0, detalle = [] } = req.body;
@@ -82,6 +86,7 @@ const SaleController = {
     }
   },
 
+  // Arma la sesión previa de Wompi antes de abrir el widget en pantalla.
   async createWompiCheckout(req, res) {
     try {
       const { descuento_porcentaje = 0, detalle = [] } = req.body;
@@ -114,6 +119,7 @@ const SaleController = {
     }
   },
 
+  // Revisa el pago en Wompi y solo después guarda la venta definitiva.
   async confirmWompiSale(req, res) {
     try {
       const {
